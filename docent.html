@@ -38,6 +38,20 @@
 </head>
 <body>
 
+<script>
+    // WACHTWOORD BEVEILIGING: Wordt direct uitgevoerd vóórdat de pagina goed laadt
+    let sessionAuth = sessionStorage.getItem('admin_auth');
+    if (sessionAuth !== "JadoreJohan!") {
+        let pwd = prompt("Veuillez entrer le mot de passe pour l'accès professeur :");
+        if (pwd === "JadoreJohan!") {
+            sessionStorage.setItem('admin_auth', pwd);
+        } else {
+            alert("Mot de passe incorrect. Redirection...");
+            window.location.href = "index.html";
+        }
+    }
+</script>
+
 <div class="container">
     <a href="index.html" class="nav-link">← Retour au module d'exercice</a>
     
@@ -87,24 +101,40 @@
 
 <script>
     let database = [];
+    
+    // EXTREEM VEILIG INLADEN VAN DATA: Voorkomt crashes bij corrupte oude bestanden
     try {
-        database = JSON.parse(localStorage.getItem('pelckmans_custom_db')) || [];
+        let rawData = localStorage.getItem('pelckmans_custom_db');
+        if (rawData) {
+            let parsed = JSON.parse(rawData);
+            if (Array.isArray(parsed)) {
+                // Verwijder alles wat geen geldig object is (corrupte rijen uitsluiten)
+                database = parsed.filter(item => item !== null && typeof item === 'object');
+            }
+        }
     } catch(e) {
-        database = [];
+        console.error("Fout bij laden database, start met lege lijst.", e);
     }
     
+    // MIGRATIE: Zet oude lijsten automatisch om naar het nieuwe format met 'series'
     let migrated = false;
     database.forEach(item => {
-        if(item.woorden && !item.series) {
+        if (!item.series) {
             item.series = [];
-            for(let i = 0; i < item.woorden.length; i += 10) {
-                item.series.push(item.woorden.slice(i, i + 10));
+            // Als er nog een oude 'woorden' array in de lijst stond
+            if (item.woorden && Array.isArray(item.woorden)) {
+                for(let i = 0; i < item.woorden.length; i += 10) {
+                    item.series.push(item.woorden.slice(i, i + 10));
+                }
             }
-            delete item.woorden;
             migrated = true;
         }
     });
-    if (migrated) localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
+    
+    // Sla gerepareerde data direct op
+    if (migrated) {
+        localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
+    }
 
     let editId = null; 
 
@@ -183,8 +213,8 @@
         if (!item || !item.series) return;
 
         editId = id;
-        document.getElementById('klas-input').value = item.klas;
-        document.getElementById('traject-input').value = item.traject;
+        document.getElementById('klas-input').value = item.klas || "";
+        document.getElementById('traject-input').value = item.traject || "";
         
         document.getElementById('input-container').style.display = "none";
         let editContainer = document.getElementById('series-edit-container');
@@ -196,7 +226,7 @@
             editContainer.innerHTML += `
                 <div class="series-edit-box">
                     <strong>Série ${index + 1}</strong>
-                    <textarea class="serie-textarea" style="height:100px; margin-top:5px; width:100%;">${serieText}</textarea>
+                    <textarea class="serie-textarea" style="height:100px; margin-top:5px; width:100%; font-family: 'Poppins', sans-serif;">${serieText}</textarea>
                 </div>
             `;
         });
@@ -235,11 +265,15 @@
         let body = document.getElementById('tabel-body');
         body.innerHTML = "";
         
+        if (database.length === 0) {
+            body.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#7f8c8d;">Aucune liste trouvée. Ajoutez-en une ci-dessus.</td></tr>`;
+            return;
+        }
+
         database.forEach((item) => {
-            // Extra veiligheidscheck: val terug op lege array als er geen series zijn
-            let veiligeSeries = item.series || []; 
+            let veiligeSeries = Array.isArray(item.series) ? item.series : []; 
             let aantalSeries = veiligeSeries.length;
-            let totaalWoorden = veiligeSeries.reduce((som, serie) => som + serie.length, 0);
+            let totaalWoorden = veiligeSeries.reduce((som, serie) => som + (Array.isArray(serie) ? serie.length : 0), 0);
             
             body.innerHTML += `
                 <tr>
@@ -255,6 +289,7 @@
         });
     }
 
+    // Wacht met het laden van de tabel tot de pagina klaar is
     window.onload = laadTabel;
 </script>
 
