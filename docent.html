@@ -2,53 +2,130 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Tableau de bord de l'enseignant - Pelckmans</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord de l'enseignant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #3498db; --danger: #e74c3c; --bg: #121212; --card: #1e1e1e; }
-        body { background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 20px; background: #333; color: white; border: 1px solid #555; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        textarea { height: 150px; font-family: monospace; }
-        button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; }
-        button:hover { filter: brightness(1.2); }
-        .btn-danger { background: var(--danger); padding: 8px 12px; font-size: 14px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 15px; }
-        th, td { padding: 12px; border: 1px solid #444; text-align: left; }
-        th { background: #333; color: var(--primary); }
-        .nav-link { color: var(--primary); text-decoration: none; display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1, h3 { margin-top: 0; }
-        label { display: block; margin-bottom: 5px; color: #ccc; font-weight: bold; }
+        :root {
+            --primary: #4776E6;
+            --secondary: #8E54E9;
+            --success: #2ecc71;
+            --danger: #ff4757;
+            --warning: #f39c12;
+            --bg-color: #f4f7f6;
+            --text-main: #2d3436;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        h1, h2 { color: var(--primary); font-weight: 800; margin-top: 0; }
+        
+        .card {
+            background: #fdfdfd;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #eee;
+            margin-bottom: 40px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #636e72; }
+        
+        input, textarea {
+            width: 100%; padding: 14px; border: 2px solid #dfe6e9; border-radius: 12px;
+            font-family: 'Poppins', sans-serif; font-size: 15px; box-sizing: border-box; transition: 0.3s;
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        textarea { height: 180px; resize: vertical; }
+
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 14px 24px;
+            border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 16px; transition: 0.2s;
+        }
+        .btn:hover { background: var(--secondary); transform: translateY(-2px); }
+        
+        .btn-small { padding: 8px 14px; font-size: 13px; border-radius: 8px; }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #e84118; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-warning:hover { background: #d35400; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { padding: 16px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; color: #636e72; font-weight: 600; border-radius: 8px 8px 0 0; }
+        tr:hover { background-color: #fafbfc; }
+
+        .nav-link {
+            color: var(--text-main); text-decoration: none; font-weight: 600; display: inline-flex;
+            align-items: center; margin-bottom: 30px; padding: 10px 20px; background: white;
+            border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.2s;
+        }
+        .nav-link:hover { color: var(--primary); transform: translateX(-5px); }
+        
+        .action-buttons { display: flex; gap: 10px; }
+        .series-edit-box { background: #f8f9fa; border: 1px solid #dfe6e9; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <a href="index.html" class="nav-link">← Retour au module d'exercice</a>
+    
     <h1>⚙️ Gestion des Listes</h1>
     
-    <div style="background: #2a2a2a; padding: 25px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #444;">
-        <h3>Ajouter une nouvelle liste</h3>
+    <div class="card" id="formulier-sectie">
+        <h2 id="form-title">Ajouter une nouvelle liste</h2>
+        <p style="font-size: 0.9rem; color: #7f8c8d; margin-top: -10px;">Les mots seront mélangés (shuffled) puis divisés en séries fixes de 10 mots.</p>
         
-        <label>Classe :</label>
-        <input type="text" id="klas-input" placeholder="Ex. 1A, 2B...">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label>Classe :</label>
+                <input type="text" id="klas-input" placeholder="Ex. 1A, 2B...">
+            </div>
+            <div class="form-group">
+                <label>Nom du Trajet :</label>
+                <input type="text" id="traject-input" placeholder="Ex. Trajet 1, Unité 3...">
+            </div>
+        </div>
         
-        <label>Nom du Trajet :</label>
-        <input type="text" id="traject-input" placeholder="Ex. Trajet 1, Unité 3...">
+        <!-- Standaard invoervak voor nieuwe lijsten -->
+        <div class="form-group" id="input-container">
+            <label>Liste de vocabulaire (Copiez depuis Excel : Col 1 = NL, Col 2 = FR) :</label>
+            <textarea id="woorden-input" placeholder="pomme    appel&#10;maison   huis&#10;..."></textarea>
+        </div>
+
+        <!-- Specifiek bewerkingsgedeelte per série (verschijnt enkel bij editen) -->
+        <div id="series-edit-container" style="display: none;"></div>
         
-        <label>Temps par mot (en secondes) :</label>
-        <input type="number" id="temps-input" value="8" min="2" max="60">
-        
-        <label>Liste de vocabulaire (Copiez depuis Excel : Col 1 = NL, Col 2 = FR) :</label>
-        <textarea id="woorden-input" placeholder="Copiez vos cellules depuis Excel et collez-les ici..."></textarea>
-        
-        <button onclick="lijstToevoegen()" style="width: 100%;">💾 Enregistrer la liste</button>
+        <button class="btn" id="save-btn" onclick="opslaanLijst()" style="width: 100%;">💾 Enregistrer la liste</button>
+        <button class="btn btn-warning" id="cancel-btn" onclick="annuleerBewerken()" style="width: 100%; margin-top: 10px; display: none;">❌ Annuler la modification</button>
     </div>
 
-    <h3>Mes listes enregistrées</h3>
+    <h2>Mes listes enregistrées</h2>
     <div style="overflow-x: auto;">
-        <table id="lijsten-tabel">
+        <table>
             <thead>
-                <tr><th>Classe</th><th>Trajet</th><th>Mots</th><th>Temps</th><th>Action</th></tr>
+                <tr>
+                    <th>Classe</th>
+                    <th>Trajet</th>
+                    <th>Info Séries</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody id="tabel-body"></tbody>
         </table>
@@ -57,57 +134,154 @@
 
 <script>
     let database = JSON.parse(localStorage.getItem('pelckmans_custom_db')) || [];
+    let editId = null; 
 
-    function lijstToevoegen() {
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function opslaanLijst() {
         let klas = document.getElementById('klas-input').value.trim();
         let traject = document.getElementById('traject-input').value.trim();
-        let temps = parseInt(document.getElementById('temps-input').value) || 8;
-        let tekst = document.getElementById('woorden-input').value.trim();
 
-        if (!klas || !traject || !tekst) return alert("Veuillez remplir tous les champs et coller une liste.");
+        if (!klas || !traject) return alert("Veuillez remplir la classe et le trajet.");
 
-        let lijnen = tekst.split('\n');
-        let woorden = [];
+        let series = [];
 
-        lijnen.forEach(lijn => {
-            let delen = lijn.split('\t'); 
-            if (delen.length >= 2) {
-                woorden.push({ nl: delen[0].trim(), fr: delen[1].trim() });
+        if (editId === null) {
+            // Nieuwe lijst toevoegen: lees grote textarea, shuffel en knip in stukken van 10
+            let tekst = document.getElementById('woorden-input').value.trim();
+            if (!tekst) return alert("Veuillez coller une liste de vocabulaire.");
+
+            let lijnen = tekst.split('\n');
+            let platteWoorden = [];
+
+            lijnen.forEach(lijn => {
+                let delen = lijn.split('\t'); 
+                if (delen.length >= 2) {
+                    platteWoorden.push({ nl: delen[0].trim(), fr: delen[1].trim() });
+                }
+            });
+
+            if (platteWoorden.length === 0) return alert("Aucun mot valide trouvé.");
+
+            shuffle(platteWoorden); // Herschik willekeurig VOORaleer series te maken
+
+            for(let i = 0; i < platteWoorden.length; i += 10) {
+                series.push(platteWoorden.slice(i, i + 10));
             }
+
+            database.push({ id: Date.now(), klas: klas, traject: traject, series: series });
+            alert("Liste ajoutée avec succès !");
+        } else {
+            // Bestaande lijst opslaan vanuit de individuele série-tekstvakken (handmatige aanpassing)
+            let serieBoxes = document.querySelectorAll('.serie-textarea');
+            
+            for (let box of serieBoxes) {
+                let serieLijnen = box.value.trim().split('\n');
+                let serieWoorden = [];
+                serieLijnen.forEach(lijn => {
+                    let delen = lijn.split('\t');
+                    if (delen.length >= 2) {
+                        serieWoorden.push({ nl: delen[0].trim(), fr: delen[1].trim() });
+                    }
+                });
+                if (serieWoorden.length > 0) {
+                    series.push(serieWoorden);
+                }
+            }
+
+            let index = database.findIndex(item => item.id === editId);
+            if (index !== -1) {
+                database[index].klas = klas;
+                database[index].traject = traject;
+                database[index].series = series;
+            }
+            alert("Liste mise à jour avec succès !");
+        }
+
+        localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
+        annuleerBewerken(); 
+        laadTabel();
+    }
+
+    // BEWERKEN: Laat elke série apart zien zodat je ze handmatig kunt aanpassen
+    function bewerkLijst(id) {
+        let item = database.find(i => i.id === id);
+        if (!item) return;
+
+        editId = id;
+        document.getElementById('klas-input').value = item.klas;
+        document.getElementById('traject-input').value = item.traject;
+        
+        // Verberg de grote invoer, toon de per-série tekstvakken
+        document.getElementById('input-container').style.display = "none";
+        let editContainer = document.getElementById('series-edit-container');
+        editContainer.style.display = "block";
+        editContainer.innerHTML = "<label style='margin-bottom:15px;'>Modifier les séries manuellement :</label>";
+
+        item.series.forEach((serie, index) => {
+            let serieText = serie.map(w => `${w.nl}\t${w.fr}`).join('\n');
+            editContainer.innerHTML += `
+                <div class="series-edit-box">
+                    <strong>Série ${index + 1}</strong>
+                    <textarea class="serie-textarea" style="height:100px; margin-top:5px;">${serieText}</textarea>
+                </div>
+            `;
         });
 
-        if (woorden.length === 0) return alert("Aucun mot valide trouvé. Assurez-vous d'avoir 2 colonnes.");
-
-        database.push({ id: Date.now(), klas: klas, traject: traject, temps: temps, woorden: woorden });
-        localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
+        document.getElementById('form-title').innerText = "✏️ Modifier les séries";
+        document.getElementById('save-btn').innerText = "💾 Mettre à jour les séries";
+        document.getElementById('cancel-btn').style.display = "block";
         
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function annuleerBewerken() {
+        editId = null;
+        document.getElementById('klas-input').value = "";
+        document.getElementById('traject-input').value = "";
         document.getElementById('woorden-input').value = "";
-        laadTabel();
-        alert("Liste ajoutée avec succès !");
+        document.getElementById('input-container').style.display = "block";
+        document.getElementById('series-edit-container').style.display = "none";
+        document.getElementById('series-edit-container').innerHTML = "";
+        
+        document.getElementById('form-title').innerText = "Ajouter une nouvelle liste";
+        document.getElementById('save-btn').innerText = "💾 Enregistrer la liste";
+        document.getElementById('cancel-btn').style.display = "none";
+    }
+
+    function verwijderLijst(id) {
+        if(confirm("Voulez-vous vraiment supprimer cette liste ?")) {
+            database = database.filter(item => item.id !== id);
+            localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
+            laadTabel();
+            if (editId === id) annuleerBewerken();
+        }
     }
 
     function laadTabel() {
         let body = document.getElementById('tabel-body');
         body.innerHTML = "";
-        database.forEach((item, index) => {
+        database.forEach((item) => {
+            let totaalWoorden = item.series.reduce((som, serie) => som + serie.length, 0);
+            
             body.innerHTML += `
                 <tr>
-                    <td>${item.klas}</td>
+                    <td style="font-weight: 600;">${item.klas}</td>
                     <td>${item.traject}</td>
-                    <td>${item.woorden.length}</td>
-                    <td>${item.temps}s</td>
-                    <td><button class="btn-danger" onclick="verwijderLijst(${index})">Supprimer</button></td>
+                    <td>${item.series.length} séries<br><small style="color:#7f8c8d;">(${totaalWoorden} mots)</small></td>
+                    <td class="action-buttons">
+                        <button class="btn btn-small btn-warning" onclick="bewerkLijst(${item.id})">✏️ Éditer</button>
+                        <button class="btn btn-small btn-danger" onclick="verwijderLijst(${item.id})">🗑️ Supprimer</button>
+                    </td>
                 </tr>
             `;
         });
-    }
-
-    function verwijderLijst(index) {
-        if(confirm("Voulez-vous vraiment supprimer cette liste ?")) {
-            database.splice(index, 1);
-            localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
-            laadTabel();
-        }
     }
 
     window.onload = laadTabel;
