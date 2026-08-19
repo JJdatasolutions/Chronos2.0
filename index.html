@@ -2,28 +2,184 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entraînement Vocabulaire</title>
+    <!-- Importation d'une police moderne et lisible -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #3498db; --success: #2ecc71; --danger: #e74c3c; --bg: #121212; --card: #1e1e1e; --accent: #f1c40f; }
-        body { background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-align: center; }
-        .container { max-width: 800px; margin: 40px auto; background: var(--card); padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); position: relative; min-height: 400px; display: flex; flex-direction: column; justify-content: center; }
-        select, button { padding: 12px; margin: 10px; background: #333; color: white; border-radius: 6px; border: 1px solid var(--primary); font-size: 16px; cursor: pointer; }
-        button { background: var(--primary); border: none; font-weight: bold; transition: 0.2s; }
-        button:hover { filter: brightness(1.2); }
-        .btn-secondary { background: #555; border: none; }
-        .btn-danger { background: var(--danger); border: none; }
-        
-        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
-        .active-screen { display: flex; }
-        
-        #word-display { font-size: 55px; font-weight: bold; margin: 40px 0; color: var(--accent); }
-        #timer-container { width: 100%; height: 12px; background: #333; border-radius: 6px; overflow: hidden; margin-bottom: 20px; }
-        #timer-bar { width: 100%; height: 100%; background: var(--success); transition: width 1s linear; }
-        
-        table { margin: 20px auto; border-collapse: collapse; width: 100%; text-align: left; }
-        th, td { padding: 15px; border-bottom: 1px solid #444; font-size: 22px; }
-        .admin-link { position: absolute; top: 15px; right: 20px; color: #888; text-decoration: none; font-size: 14px; transition: 0.2s; }
-        .admin-link:hover { color: white; }
+        :root {
+            --primary: #4776E6;
+            --secondary: #8E54E9;
+            --success: #2ecc71;
+            --danger: #ff4757;
+            --bg-gradient: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
+            --text-main: #2d3436;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 850px;
+            padding: 40px 50px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            color: #636e72;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 2px solid #dfe6e9;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .btn {
+            background: var(--bg-gradient);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(71, 118, 230, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(71, 118, 230, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 2px solid #dfe6e9;
+            box-shadow: none;
+        }
+        .btn-outline:hover { background: #f1f2f6; box-shadow: none; }
+
+        .btn-danger {
+            background: var(--danger);
+            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .screen { display: none; animation: fadeIn 0.5s ease; }
+        .active-screen { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Styles pour l'exercice */
+        #word-display {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 50px 0;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #timer-container {
+            width: 100%;
+            height: 16px;
+            background: #dfe6e9;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--success);
+            transition: width 1s linear, background-color 0.5s;
+        }
+
+        #info-header { font-weight: 600; color: #b2bec3; font-size: 1.2rem; }
+
+        /* Styles pour les résultats */
+        .results-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 12px;
+            border: 1px solid #dfe6e9;
+            margin-bottom: 25px;
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 16px 20px; border-bottom: 1px solid #dfe6e9; font-size: 1.1rem; }
+        th { background: #f8f9fa; font-weight: 600; position: sticky; top: 0; }
+        td:first-child { font-weight: 600; }
+        td:last-child { color: var(--secondary); font-weight: 800; }
+
+        .admin-link {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #b2bec3;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .admin-link:hover { color: var(--primary); }
+
+        .flex-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -33,38 +189,55 @@
 
     <!-- Écran 1: Menu de sélection -->
     <div id="menu-screen" class="screen active-screen">
-        <h1 style="margin-bottom: 10px;">Entraînement Vocabulaire</h1>
-        <p style="color: #aaa; margin-bottom: 30px;">Sélectionnez votre classe et votre trajet pour commencer.</p>
+        <h1>Entraînement Vocabulaire</h1>
+        <p class="subtitle">Prêt à apprendre ? Configurez votre session.</p>
         
-        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; width: 100%;">
-            <select id="klas-select" onchange="laadTrajecten()" style="flex: 1; min-width: 200px;">
-                <option value="">-- Choisir la Classe --</option>
-            </select>
-            <select id="traject-select" style="flex: 1; min-width: 200px;">
-                <option value="">-- Choisir le Trajet --</option>
-            </select>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; margin-bottom: 30px;">
+            <div class="form-group" style="margin: 0;">
+                <label>1. Choisissez la classe</label>
+                <select id="klas-select" onchange="laadTrajecten()">
+                    <option value="">-- Sélectionner --</option>
+                </select>
+            </div>
+            
+            <div class="form-group" style="margin: 0;">
+                <label>2. Choisissez le trajet</label>
+                <select id="traject-select">
+                    <option value="">-- Sélectionner --</option>
+                </select>
+            </div>
         </div>
-        <button onclick="startOefening()" style="width: 200px; margin-top: 20px; font-size: 18px;">🚀 Commencer</button>
+
+        <div class="form-group" style="max-width: 300px; margin: 0 auto 30px auto;">
+            <label style="text-align: center;">⏱️ Temps par mot (secondes)</label>
+            <input type="number" id="time-input" value="8" min="2" max="60">
+        </div>
+
+        <button class="btn" onclick="startOefening()">🚀 Commencer l'exercice</button>
     </div>
 
     <!-- Écran 2: Exercice en cours -->
     <div id="exercise-screen" class="screen">
-        <div id="info-header" style="color: #aaa; margin-bottom: 20px; font-size: 18px;"></div>
+        <div id="info-header"></div>
         <div id="timer-container"><div id="timer-bar"></div></div>
         <div id="word-display">Chargement...</div>
-        <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <button id="pause-btn" class="btn-secondary" style="width: 140px;" onclick="togglePause()">Pause</button>
-            <button class="btn-danger" style="width: 140px;" onclick="location.reload()">Arrêter</button>
+        
+        <div class="flex-buttons">
+            <button id="pause-btn" class="btn btn-outline" onclick="togglePause()">⏸️ Pause</button>
+            <button class="btn btn-danger" onclick="location.reload()">🛑 Arrêter</button>
         </div>
     </div>
 
-    <!-- Écran 3: Résultats / Solutions -->
+    <!-- Écran 3: Résultats -->
     <div id="result-screen" class="screen">
-        <h2 style="color: var(--success); font-size: 32px;">Série terminée !</h2>
-        <div style="max-height: 400px; overflow-y: auto; width: 100%; background: #2a2a2a; border-radius: 8px; padding: 10px;">
+        <h1 style="color: var(--success); font-size: 2.5rem;">Bravo ! 🎉</h1>
+        <p class="subtitle">Voici un récapitulatif de votre série.</p>
+        
+        <div class="results-table-container">
             <table id="res-body"></table>
         </div>
-        <button style="margin-top: 25px; width: 250px;" onclick="location.reload()">Retour au menu</button>
+        
+        <button class="btn" onclick="location.reload()">🏠 Retour au menu</button>
     </div>
 </div>
 
@@ -82,7 +255,7 @@
     function laadTrajecten() {
         let gekozenKlas = document.getElementById('klas-select').value;
         let trajectSelect = document.getElementById('traject-select');
-        trajectSelect.innerHTML = '<option value="">-- Choisir le Trajet --</option>';
+        trajectSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
         
         let relevanteLijsten = database.filter(item => item.klas === gekozenKlas);
         relevanteLijsten.forEach(item => {
@@ -105,11 +278,13 @@
 
     function startOefening() {
         let id = document.getElementById('traject-select').value;
+        maxTime = parseInt(document.getElementById('time-input').value);
+
         if (!id) return alert("Veuillez choisir un trajet !");
+        if (!maxTime || maxTime < 1) return alert("Veuillez définir un temps valide.");
         
         let gekozenItem = database.find(item => item.id == id);
         actieveLijst = shuffle([...gekozenItem.woorden]);
-        maxTime = gekozenItem.temps || 8; // Récupère le temps personnalisé (ou 8 par défaut)
         
         switchScreen('exercise-screen');
         nextWord();
@@ -120,9 +295,9 @@
         
         timeLeft = maxTime;
         isPaused = false;
-        document.getElementById('pause-btn').innerText = "Pause";
+        document.getElementById('pause-btn').innerHTML = "⏸️ Pause";
         document.getElementById('word-display').innerText = actieveLijst[wordIdx].nl;
-        document.getElementById('info-header').innerText = `Mot ${wordIdx + 1} / ${actieveLijst.length}`;
+        document.getElementById('info-header').innerText = `Mot ${wordIdx + 1} sur ${actieveLijst.length}`;
         updateTimerBar();
 
         if (interval) clearInterval(interval);
@@ -143,13 +318,18 @@
         let percentage = (timeLeft / maxTime) * 100;
         bar.style.width = percentage + "%";
         
-        // La barre devient rouge quand il reste 25% du temps (ex: 2s sur 8s, ou 5s sur 20s)
-        bar.style.background = percentage <= 25 ? "var(--danger)" : "var(--success)";
+        if (percentage <= 25) {
+            bar.style.background = "var(--danger)";
+        } else if (percentage <= 50) {
+            bar.style.background = "#f1c40f"; // Jaune/Orange pour avertir
+        } else {
+            bar.style.background = "var(--success)";
+        }
     }
 
     function togglePause() {
         isPaused = !isPaused;
-        document.getElementById('pause-btn').innerText = isPaused ? "Reprendre" : "Pause";
+        document.getElementById('pause-btn').innerHTML = isPaused ? "▶️ Reprendre" : "⏸️ Pause";
     }
 
     function eindScherm() {
@@ -157,10 +337,11 @@
         switchScreen('result-screen');
         
         let resBody = document.getElementById('res-body');
-        resBody.innerHTML = actieveLijst.map(w => `
+        resBody.innerHTML = `<tr><th>Néerlandais</th><th>Français</th></tr>` + 
+        actieveLijst.map(w => `
             <tr>
-                <td style="width:50%;">${w.nl}</td>
-                <td style="color:var(--primary); font-weight:bold;">${w.fr}</td>
+                <td>${w.nl}</td>
+                <td>${w.fr}</td>
             </tr>
         `).join('');
     }
