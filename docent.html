@@ -2,49 +2,57 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Docentendashboard - Pelckmans</title>
+    <title>Tableau de bord de l'enseignant - Pelckmans</title>
     <style>
         :root { --primary: #3498db; --danger: #e74c3c; --bg: #121212; --card: #1e1e1e; }
         body { background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 12px; }
-        input, textarea { width: 100%; padding: 10px; margin-bottom: 15px; background: #333; color: white; border: 1px solid #555; border-radius: 6px; box-sizing: border-box; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 20px; background: #333; color: white; border: 1px solid #555; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
         textarea { height: 150px; font-family: monospace; }
-        button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; }
         button:hover { filter: brightness(1.2); }
-        .btn-danger { background: var(--danger); padding: 5px 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border: 1px solid #444; text-align: left; }
-        th { background: #333; }
-        .nav-link { color: var(--primary); text-decoration: none; display: inline-block; margin-bottom: 20px; }
+        .btn-danger { background: var(--danger); padding: 8px 12px; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 15px; }
+        th, td { padding: 12px; border: 1px solid #444; text-align: left; }
+        th { background: #333; color: var(--primary); }
+        .nav-link { color: var(--primary); text-decoration: none; display: inline-block; margin-bottom: 20px; font-weight: bold; }
+        h1, h3 { margin-top: 0; }
+        label { display: block; margin-bottom: 5px; color: #ccc; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <a href="index.html" class="nav-link">← Naar Oefenmodule (Studenten)</a>
-    <h1>Lijsten Beheren</h1>
+    <a href="index.html" class="nav-link">← Retour au module d'exercice</a>
+    <h1>⚙️ Gestion des Listes</h1>
     
-    <div style="background: #2a2a2a; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-        <h3>Nieuwe lijst toevoegen</h3>
-        <label>Klas:</label>
-        <input type="text" id="klas-input" placeholder="Bv. 1A, 2B...">
+    <div style="background: #2a2a2a; padding: 25px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #444;">
+        <h3>Ajouter une nouvelle liste</h3>
         
-        <label>Naam Traject:</label>
-        <input type="text" id="traject-input" placeholder="Bv. Trajet 1, Unité 3...">
+        <label>Classe :</label>
+        <input type="text" id="klas-input" placeholder="Ex. 1A, 2B...">
         
-        <label>Woordenlijst (Kopieer uit Excel: Kolom 1 = NL, Kolom 2 = FR):</label>
-        <textarea id="woorden-input" placeholder="Kopieer je cellen uit Excel en plak ze hier..."></textarea>
+        <label>Nom du Trajet :</label>
+        <input type="text" id="traject-input" placeholder="Ex. Trajet 1, Unité 3...">
         
-        <button onclick="lijstToevoegen()">Opslaan & Toevoegen</button>
+        <label>Temps par mot (en secondes) :</label>
+        <input type="number" id="temps-input" value="8" min="2" max="60">
+        
+        <label>Liste de vocabulaire (Copiez depuis Excel : Col 1 = NL, Col 2 = FR) :</label>
+        <textarea id="woorden-input" placeholder="Copiez vos cellules depuis Excel et collez-les ici..."></textarea>
+        
+        <button onclick="lijstToevoegen()" style="width: 100%;">💾 Enregistrer la liste</button>
     </div>
 
-    <h3>Mijn Opgeslagen Lijsten</h3>
-    <table id="lijsten-tabel">
-        <thead>
-            <tr><th>Klas</th><th>Traject</th><th>Aantal woorden</th><th>Actie</th></tr>
-        </thead>
-        <tbody id="tabel-body"></tbody>
-    </table>
+    <h3>Mes listes enregistrées</h3>
+    <div style="overflow-x: auto;">
+        <table id="lijsten-tabel">
+            <thead>
+                <tr><th>Classe</th><th>Trajet</th><th>Mots</th><th>Temps</th><th>Action</th></tr>
+            </thead>
+            <tbody id="tabel-body"></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -53,28 +61,29 @@
     function lijstToevoegen() {
         let klas = document.getElementById('klas-input').value.trim();
         let traject = document.getElementById('traject-input').value.trim();
+        let temps = parseInt(document.getElementById('temps-input').value) || 8;
         let tekst = document.getElementById('woorden-input').value.trim();
 
-        if (!klas || !traject || !tekst) return alert("Vul alle velden in en plak een lijst.");
+        if (!klas || !traject || !tekst) return alert("Veuillez remplir tous les champs et coller une liste.");
 
         let lijnen = tekst.split('\n');
         let woorden = [];
 
         lijnen.forEach(lijn => {
-            let delen = lijn.split('\t'); // Excel kopieert standaard met een tab-spatie
+            let delen = lijn.split('\t'); 
             if (delen.length >= 2) {
                 woorden.push({ nl: delen[0].trim(), fr: delen[1].trim() });
             }
         });
 
-        if (woorden.length === 0) return alert("Geen geldige woorden gevonden. Zorg voor 2 kolommen.");
+        if (woorden.length === 0) return alert("Aucun mot valide trouvé. Assurez-vous d'avoir 2 colonnes.");
 
-        database.push({ id: Date.now(), klas: klas, traject: traject, woorden: woorden });
+        database.push({ id: Date.now(), klas: klas, traject: traject, temps: temps, woorden: woorden });
         localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
         
         document.getElementById('woorden-input').value = "";
         laadTabel();
-        alert("Lijst succesvol toegevoegd!");
+        alert("Liste ajoutée avec succès !");
     }
 
     function laadTabel() {
@@ -86,14 +95,15 @@
                     <td>${item.klas}</td>
                     <td>${item.traject}</td>
                     <td>${item.woorden.length}</td>
-                    <td><button class="btn-danger" onclick="verwijderLijst(${index})">Verwijderen</button></td>
+                    <td>${item.temps}s</td>
+                    <td><button class="btn-danger" onclick="verwijderLijst(${index})">Supprimer</button></td>
                 </tr>
             `;
         });
     }
 
     function verwijderLijst(index) {
-        if(confirm("Lijst definitief verwijderen?")) {
+        if(confirm("Voulez-vous vraiment supprimer cette liste ?")) {
             database.splice(index, 1);
             localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
             laadTabel();
