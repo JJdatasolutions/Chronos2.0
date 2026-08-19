@@ -7,83 +7,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4776E6;
-            --secondary: #8E54E9;
-            --success: #2ecc71;
-            --danger: #ff4757;
-            --bg-gradient: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
-            --text-main: #2d3436;
+            --primary: #4776E6; --secondary: #8E54E9; --success: #2ecc71; --danger: #ff4757;
+            --bg-gradient: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%); --text-main: #2d3436;
         }
-
         body {
-            background: var(--bg-gradient);
-            color: var(--text-main);
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
+            background: var(--bg-gradient); color: var(--text-main); font-family: 'Poppins', sans-serif;
+            margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            padding: 20px; box-sizing: border-box;
         }
-
         .container {
-            background: white;
-            width: 100%;
-            max-width: 850px;
-            padding: 40px 50px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            position: relative;
-            text-align: center;
+            background: white; width: 100%; max-width: 850px; padding: 40px 50px;
+            border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; text-align: center;
         }
-
         h1 { color: var(--primary); font-weight: 800; font-size: 2.2rem; margin-bottom: 5px; }
         p.subtitle { color: #636e72; font-size: 1.1rem; margin-bottom: 30px; }
-
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
-
         select, input[type="number"] {
-            width: 100%;
-            padding: 14px 20px;
-            border-radius: 12px;
-            border: 2px solid #dfe6e9;
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
+            width: 100%; padding: 14px 20px; border-radius: 12px; border: 2px solid #dfe6e9;
+            font-size: 16px; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: 0.3s;
         }
         select:focus, input[type="number"]:focus { outline: none; border-color: var(--secondary); }
-
         .btn {
-            background: var(--bg-gradient);
-            color: white; border: none; padding: 15px 30px; font-size: 18px; font-weight: 600;
-            border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(71, 118, 230, 0.3);
-            transition: transform 0.2s; font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient); color: white; border: none; padding: 15px 30px;
+            font-size: 18px; font-weight: 600; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(71, 118, 230, 0.3); transition: transform 0.2s; font-family: 'Poppins', sans-serif;
         }
         .btn:hover { transform: translateY(-3px); }
         .btn-outline { background: transparent; color: var(--text-main); border: 2px solid #dfe6e9; box-shadow: none; }
         .btn-danger { background: var(--danger); box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3); }
-
         .screen { display: none; }
         .active-screen { display: block; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         #word-display { font-size: 4.5rem; font-weight: 800; color: var(--primary); margin: 50px 0; min-height: 120px; display: flex; align-items: center; justify-content: center; }
         #timer-container { width: 100%; height: 16px; background: #dfe6e9; border-radius: 8px; overflow: hidden; margin: 20px 0; }
         #timer-bar { width: 100%; height: 100%; background: var(--success); transition: width 1s linear, background-color 0.5s; }
         #info-header { font-weight: 600; color: #b2bec3; font-size: 1.2rem; }
-
         .results-table-container { max-height: 400px; overflow-y: auto; border-radius: 12px; border: 1px solid #dfe6e9; margin: 25px 0; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 16px 20px; border-bottom: 1px solid #dfe6e9; font-size: 1.1rem; }
         th { background: #f8f9fa; font-weight: 600; position: sticky; top: 0; }
         td:first-child { font-weight: 600; }
         td:last-child { color: var(--secondary); font-weight: 800; }
-
-        .admin-link { position: absolute; top: 20px; right: 25px; color: #b2bec3; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+        .admin-link { position: absolute; top: 20px; right: 25px; color: #b2bec3; text-decoration: none; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
         .admin-link:hover { color: var(--primary); }
         .flex-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
     </style>
@@ -91,7 +57,7 @@
 <body>
 
 <div class="container">
-    <a href="docent.html" class="admin-link">⚙️ Accès Professeur</a>
+    <a onclick="checkAdminPassword()" class="admin-link">⚙️ Accès Professeur</a>
 
     <!-- Écran 1: Menu de sélection -->
     <div id="menu-screen" class="screen active-screen">
@@ -158,7 +124,9 @@
 </div>
 
 <script>
-    let database = JSON.parse(localStorage.getItem('pelckmans_custom_db')) || [];
+    let database = [];
+    try { database = JSON.parse(localStorage.getItem('pelckmans_custom_db')) || []; } catch(e) {}
+    
     let actieveLijst = [];
     let wordIdx = 0, timeLeft = 8, maxTime = 8, isPaused = false, interval;
 
@@ -167,6 +135,15 @@
         let klasSelect = document.getElementById('klas-select');
         klassen.forEach(k => klasSelect.innerHTML += `<option value="${k}">${k}</option>`);
     };
+
+    function checkAdminPassword() {
+        let pwd = prompt("Veuillez entrer le mot de passe pour l'accès professeur :");
+        if (pwd === "JadoreJohan!") {
+            window.location.href = "docent.html";
+        } else if (pwd !== null) {
+            alert("Mot de passe incorrect.");
+        }
+    }
 
     function laadTrajecten() {
         let gekozenKlas = document.getElementById('klas-select').value;
@@ -217,7 +194,6 @@
         if (!maxTime || maxTime < 1) return alert("Veuillez définir un temps valide.");
         
         let gekozenItem = database.find(item => item.id == id);
-        // We nemen de vaste série, maar shuffelen de woorden binnen de série voor het oefenen
         actieveLijst = shuffle([...gekozenItem.series[serieIdx]]);
         
         switchScreen('exercise-screen');
@@ -237,12 +213,8 @@
         if (interval) clearInterval(interval);
         interval = setInterval(() => {
             if (!isPaused) {
-                timeLeft--; 
-                updateTimerBar();
-                if (timeLeft <= 0) { 
-                    wordIdx++; 
-                    nextWord(); 
-                }
+                timeLeft--; updateTimerBar();
+                if (timeLeft <= 0) { wordIdx++; nextWord(); }
             }
         }, 1000);
     }
@@ -268,12 +240,7 @@
         
         let resBody = document.getElementById('res-body');
         resBody.innerHTML = `<tr><th>Néerlandais</th><th>Français</th></tr>` + 
-        actieveLijst.map(w => `
-            <tr>
-                <td>${w.nl}</td>
-                <td>${w.fr}</td>
-            </tr>
-        `).join('');
+        actieveLijst.map(w => `<tr><td>${w.nl}</td><td>${w.fr}</td></tr>`).join('');
     }
 
     function toonOplossingen() {
