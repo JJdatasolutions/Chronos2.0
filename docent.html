@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Docentendashboard - Pelckmans</title>
+    <style>
+        :root { --primary: #3498db; --danger: #e74c3c; --bg: #121212; --card: #1e1e1e; }
+        body { background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 12px; }
+        input, textarea { width: 100%; padding: 10px; margin-bottom: 15px; background: #333; color: white; border: 1px solid #555; border-radius: 6px; box-sizing: border-box; }
+        textarea { height: 150px; font-family: monospace; }
+        button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button:hover { filter: brightness(1.2); }
+        .btn-danger { background: var(--danger); padding: 5px 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #444; text-align: left; }
+        th { background: #333; }
+        .nav-link { color: var(--primary); text-decoration: none; display: inline-block; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="nav-link">← Naar Oefenmodule (Studenten)</a>
+    <h1>Lijsten Beheren</h1>
+    
+    <div style="background: #2a2a2a; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3>Nieuwe lijst toevoegen</h3>
+        <label>Klas:</label>
+        <input type="text" id="klas-input" placeholder="Bv. 1A, 2B...">
+        
+        <label>Naam Traject:</label>
+        <input type="text" id="traject-input" placeholder="Bv. Trajet 1, Unité 3...">
+        
+        <label>Woordenlijst (Kopieer uit Excel: Kolom 1 = NL, Kolom 2 = FR):</label>
+        <textarea id="woorden-input" placeholder="Kopieer je cellen uit Excel en plak ze hier..."></textarea>
+        
+        <button onclick="lijstToevoegen()">Opslaan & Toevoegen</button>
+    </div>
+
+    <h3>Mijn Opgeslagen Lijsten</h3>
+    <table id="lijsten-tabel">
+        <thead>
+            <tr><th>Klas</th><th>Traject</th><th>Aantal woorden</th><th>Actie</th></tr>
+        </thead>
+        <tbody id="tabel-body"></tbody>
+    </table>
+</div>
+
+<script>
+    let database = JSON.parse(localStorage.getItem('pelckmans_custom_db')) || [];
+
+    function lijstToevoegen() {
+        let klas = document.getElementById('klas-input').value.trim();
+        let traject = document.getElementById('traject-input').value.trim();
+        let tekst = document.getElementById('woorden-input').value.trim();
+
+        if (!klas || !traject || !tekst) return alert("Vul alle velden in en plak een lijst.");
+
+        let lijnen = tekst.split('\n');
+        let woorden = [];
+
+        lijnen.forEach(lijn => {
+            let delen = lijn.split('\t'); // Excel kopieert standaard met een tab-spatie
+            if (delen.length >= 2) {
+                woorden.push({ nl: delen[0].trim(), fr: delen[1].trim() });
+            }
+        });
+
+        if (woorden.length === 0) return alert("Geen geldige woorden gevonden. Zorg voor 2 kolommen.");
+
+        database.push({ id: Date.now(), klas: klas, traject: traject, woorden: woorden });
+        localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
+        
+        document.getElementById('woorden-input').value = "";
+        laadTabel();
+        alert("Lijst succesvol toegevoegd!");
+    }
+
+    function laadTabel() {
+        let body = document.getElementById('tabel-body');
+        body.innerHTML = "";
+        database.forEach((item, index) => {
+            body.innerHTML += `
+                <tr>
+                    <td>${item.klas}</td>
+                    <td>${item.traject}</td>
+                    <td>${item.woorden.length}</td>
+                    <td><button class="btn-danger" onclick="verwijderLijst(${index})">Verwijderen</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    function verwijderLijst(index) {
+        if(confirm("Lijst definitief verwijderen?")) {
+            database.splice(index, 1);
+            localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
+            laadTabel();
+        }
+    }
+
+    window.onload = laadTabel;
+</script>
+
+</body>
+</html>
