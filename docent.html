@@ -7,76 +7,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4776E6;
-            --secondary: #8E54E9;
-            --success: #2ecc71;
-            --danger: #ff4757;
-            --warning: #f39c12;
-            --bg-color: #f4f7f6;
-            --text-main: #2d3436;
+            --primary: #4776E6; --secondary: #8E54E9; --success: #2ecc71;
+            --danger: #ff4757; --warning: #f39c12; --bg-color: #f4f7f6; --text-main: #2d3436;
         }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 40px 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Poppins', sans-serif; margin: 0; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         h1, h2 { color: var(--primary); font-weight: 800; margin-top: 0; }
-        
-        .card {
-            background: #fdfdfd;
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid #eee;
-            margin-bottom: 40px;
-        }
-
+        .card { background: #fdfdfd; padding: 30px; border-radius: 16px; border: 1px solid #eee; margin-bottom: 40px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; font-weight: 600; margin-bottom: 8px; color: #636e72; }
-        
-        input, textarea {
-            width: 100%; padding: 14px; border: 2px solid #dfe6e9; border-radius: 12px;
-            font-family: 'Poppins', sans-serif; font-size: 15px; box-sizing: border-box; transition: 0.3s;
-        }
+        input, textarea { width: 100%; padding: 14px; border: 2px solid #dfe6e9; border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 15px; box-sizing: border-box; transition: 0.3s; }
         input:focus, textarea:focus { outline: none; border-color: var(--primary); }
         textarea { height: 180px; resize: vertical; }
-
-        .btn {
-            background: var(--primary); color: white; border: none; padding: 14px 24px;
-            border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 16px; transition: 0.2s;
-        }
+        .btn { background: var(--primary); color: white; border: none; padding: 14px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 16px; transition: 0.2s; }
         .btn:hover { background: var(--secondary); transform: translateY(-2px); }
-        
         .btn-small { padding: 8px 14px; font-size: 13px; border-radius: 8px; }
         .btn-danger { background: var(--danger); }
         .btn-danger:hover { background: #e84118; }
         .btn-warning { background: var(--warning); color: white; }
         .btn-warning:hover { background: #d35400; }
-
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
         th, td { padding: 16px; text-align: left; border-bottom: 1px solid #eee; }
         th { background: #f8f9fa; color: #636e72; font-weight: 600; border-radius: 8px 8px 0 0; }
         tr:hover { background-color: #fafbfc; }
-
-        .nav-link {
-            color: var(--text-main); text-decoration: none; font-weight: 600; display: inline-flex;
-            align-items: center; margin-bottom: 30px; padding: 10px 20px; background: white;
-            border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.2s;
-        }
+        .nav-link { color: var(--text-main); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; margin-bottom: 30px; padding: 10px 20px; background: white; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.2s; }
         .nav-link:hover { color: var(--primary); transform: translateX(-5px); }
-        
         .action-buttons { display: flex; gap: 10px; }
         .series-edit-box { background: #f8f9fa; border: 1px solid #dfe6e9; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
     </style>
@@ -103,13 +58,11 @@
             </div>
         </div>
         
-        <!-- Standaard invoervak voor nieuwe lijsten -->
         <div class="form-group" id="input-container">
             <label>Liste de vocabulaire (Copiez depuis Excel : Col 1 = NL, Col 2 = FR) :</label>
             <textarea id="woorden-input" placeholder="pomme    appel&#10;maison   huis&#10;..."></textarea>
         </div>
 
-        <!-- Specifiek bewerkingsgedeelte per série (verschijnt enkel bij editen) -->
         <div id="series-edit-container" style="display: none;"></div>
         
         <button class="btn" id="save-btn" onclick="opslaanLijst()" style="width: 100%;">💾 Enregistrer la liste</button>
@@ -133,7 +86,26 @@
 </div>
 
 <script>
-    let database = JSON.parse(localStorage.getItem('pelckmans_custom_db')) || [];
+    let database = [];
+    try {
+        database = JSON.parse(localStorage.getItem('pelckmans_custom_db')) || [];
+    } catch(e) {
+        database = [];
+    }
+    
+    let migrated = false;
+    database.forEach(item => {
+        if(item.woorden && !item.series) {
+            item.series = [];
+            for(let i = 0; i < item.woorden.length; i += 10) {
+                item.series.push(item.woorden.slice(i, i + 10));
+            }
+            delete item.woorden;
+            migrated = true;
+        }
+    });
+    if (migrated) localStorage.setItem('pelckmans_custom_db', JSON.stringify(database));
+
     let editId = null; 
 
     function shuffle(array) {
@@ -153,7 +125,6 @@
         let series = [];
 
         if (editId === null) {
-            // Nieuwe lijst toevoegen: lees grote textarea, shuffel en knip in stukken van 10
             let tekst = document.getElementById('woorden-input').value.trim();
             if (!tekst) return alert("Veuillez coller une liste de vocabulaire.");
 
@@ -169,7 +140,7 @@
 
             if (platteWoorden.length === 0) return alert("Aucun mot valide trouvé.");
 
-            shuffle(platteWoorden); // Herschik willekeurig VOORaleer series te maken
+            shuffle(platteWoorden);
 
             for(let i = 0; i < platteWoorden.length; i += 10) {
                 series.push(platteWoorden.slice(i, i + 10));
@@ -178,9 +149,7 @@
             database.push({ id: Date.now(), klas: klas, traject: traject, series: series });
             alert("Liste ajoutée avec succès !");
         } else {
-            // Bestaande lijst opslaan vanuit de individuele série-tekstvakken (handmatige aanpassing)
             let serieBoxes = document.querySelectorAll('.serie-textarea');
-            
             for (let box of serieBoxes) {
                 let serieLijnen = box.value.trim().split('\n');
                 let serieWoorden = [];
@@ -209,16 +178,14 @@
         laadTabel();
     }
 
-    // BEWERKEN: Laat elke série apart zien zodat je ze handmatig kunt aanpassen
     function bewerkLijst(id) {
         let item = database.find(i => i.id === id);
-        if (!item) return;
+        if (!item || !item.series) return;
 
         editId = id;
         document.getElementById('klas-input').value = item.klas;
         document.getElementById('traject-input').value = item.traject;
         
-        // Verberg de grote invoer, toon de per-série tekstvakken
         document.getElementById('input-container').style.display = "none";
         let editContainer = document.getElementById('series-edit-container');
         editContainer.style.display = "block";
@@ -229,7 +196,7 @@
             editContainer.innerHTML += `
                 <div class="series-edit-box">
                     <strong>Série ${index + 1}</strong>
-                    <textarea class="serie-textarea" style="height:100px; margin-top:5px;">${serieText}</textarea>
+                    <textarea class="serie-textarea" style="height:100px; margin-top:5px; width:100%;">${serieText}</textarea>
                 </div>
             `;
         });
@@ -267,14 +234,18 @@
     function laadTabel() {
         let body = document.getElementById('tabel-body');
         body.innerHTML = "";
+        
         database.forEach((item) => {
-            let totaalWoorden = item.series.reduce((som, serie) => som + serie.length, 0);
+            // Extra veiligheidscheck: val terug op lege array als er geen series zijn
+            let veiligeSeries = item.series || []; 
+            let aantalSeries = veiligeSeries.length;
+            let totaalWoorden = veiligeSeries.reduce((som, serie) => som + serie.length, 0);
             
             body.innerHTML += `
                 <tr>
-                    <td style="font-weight: 600;">${item.klas}</td>
-                    <td>${item.traject}</td>
-                    <td>${item.series.length} séries<br><small style="color:#7f8c8d;">(${totaalWoorden} mots)</small></td>
+                    <td style="font-weight: 600;">${item.klas || "Inconnu"}</td>
+                    <td>${item.traject || "Inconnu"}</td>
+                    <td>${aantalSeries} séries<br><small style="color:#7f8c8d;">(${totaalWoorden} mots)</small></td>
                     <td class="action-buttons">
                         <button class="btn btn-small btn-warning" onclick="bewerkLijst(${item.id})">✏️ Éditer</button>
                         <button class="btn btn-small btn-danger" onclick="verwijderLijst(${item.id})">🗑️ Supprimer</button>
