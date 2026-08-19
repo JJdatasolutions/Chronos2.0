@@ -57,7 +57,7 @@
 <body>
 
 <div class="container">
-    <a onclick="checkAdminPassword()" class="admin-link">⚙️ Accès Professeur</a>
+    <a href="docent.html" class="admin-link">⚙️ Accès Professeur</a>
 
     <!-- Écran 1: Menu de sélection -->
     <div id="menu-screen" class="screen active-screen">
@@ -125,25 +125,22 @@
 
 <script>
     let database = [];
-    try { database = JSON.parse(localStorage.getItem('pelckmans_custom_db')) || []; } catch(e) {}
+    try { 
+        let raw = localStorage.getItem('pelckmans_custom_db');
+        if (raw) {
+            let parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) database = parsed.filter(item => item && typeof item === 'object');
+        }
+    } catch(e) { console.error("Database error", e); }
     
     let actieveLijst = [];
     let wordIdx = 0, timeLeft = 8, maxTime = 8, isPaused = false, interval;
 
     window.onload = () => {
-        let klassen = [...new Set(database.map(item => item.klas))];
+        let klassen = [...new Set(database.map(item => item.klas).filter(Boolean))];
         let klasSelect = document.getElementById('klas-select');
         klassen.forEach(k => klasSelect.innerHTML += `<option value="${k}">${k}</option>`);
     };
-
-    function checkAdminPassword() {
-        let pwd = prompt("Veuillez entrer le mot de passe pour l'accès professeur :");
-        if (pwd === "JadoreJohan!") {
-            window.location.href = "docent.html";
-        } else if (pwd !== null) {
-            alert("Mot de passe incorrect.");
-        }
-    }
 
     function laadTrajecten() {
         let gekozenKlas = document.getElementById('klas-select').value;
