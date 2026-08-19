@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entraînement Vocabulaire</title>
-    <!-- Importation d'une police moderne et lisible -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -38,33 +37,13 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             position: relative;
             text-align: center;
-            transition: all 0.3s ease;
         }
 
-        h1 {
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 2.2rem;
-            margin-bottom: 5px;
-        }
+        h1 { color: var(--primary); font-weight: 800; font-size: 2.2rem; margin-bottom: 5px; }
+        p.subtitle { color: #636e72; font-size: 1.1rem; margin-bottom: 30px; }
 
-        p.subtitle {
-            color: #636e72;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
 
         select, input[type="number"] {
             width: 100%;
@@ -73,112 +52,39 @@
             border: 2px solid #dfe6e9;
             font-size: 16px;
             font-family: 'Poppins', sans-serif;
-            transition: border-color 0.3s;
             box-sizing: border-box;
+            transition: border-color 0.3s;
         }
-
-        select:focus, input[type="number"]:focus {
-            outline: none;
-            border-color: var(--secondary);
-        }
+        select:focus, input[type="number"]:focus { outline: none; border-color: var(--secondary); }
 
         .btn {
             background: var(--bg-gradient);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(71, 118, 230, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-family: 'Poppins', sans-serif;
+            color: white; border: none; padding: 15px 30px; font-size: 18px; font-weight: 600;
+            border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(71, 118, 230, 0.3);
+            transition: transform 0.2s; font-family: 'Poppins', sans-serif;
         }
+        .btn:hover { transform: translateY(-3px); }
+        .btn-outline { background: transparent; color: var(--text-main); border: 2px solid #dfe6e9; box-shadow: none; }
+        .btn-danger { background: var(--danger); box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3); }
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 25px rgba(71, 118, 230, 0.4);
-        }
+        .screen { display: none; }
+        .active-screen { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--text-main);
-            border: 2px solid #dfe6e9;
-            box-shadow: none;
-        }
-        .btn-outline:hover { background: #f1f2f6; box-shadow: none; }
-
-        .btn-danger {
-            background: var(--danger);
-            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
-        }
-
-        .screen { display: none; animation: fadeIn 0.5s ease; }
-        .active-screen { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Styles pour l'exercice */
-        #word-display {
-            font-size: 4.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin: 50px 0;
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #timer-container {
-            width: 100%;
-            height: 16px;
-            background: #dfe6e9;
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        #timer-bar {
-            width: 100%;
-            height: 100%;
-            background: var(--success);
-            transition: width 1s linear, background-color 0.5s;
-        }
-
+        #word-display { font-size: 4.5rem; font-weight: 800; color: var(--primary); margin: 50px 0; min-height: 120px; display: flex; align-items: center; justify-content: center; }
+        #timer-container { width: 100%; height: 16px; background: #dfe6e9; border-radius: 8px; overflow: hidden; margin: 20px 0; }
+        #timer-bar { width: 100%; height: 100%; background: var(--success); transition: width 1s linear, background-color 0.5s; }
         #info-header { font-weight: 600; color: #b2bec3; font-size: 1.2rem; }
 
-        /* Styles pour les résultats */
-        .results-table-container {
-            max-height: 400px;
-            overflow-y: auto;
-            border-radius: 12px;
-            border: 1px solid #dfe6e9;
-            margin-bottom: 25px;
-        }
-
+        .results-table-container { max-height: 400px; overflow-y: auto; border-radius: 12px; border: 1px solid #dfe6e9; margin: 25px 0; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 16px 20px; border-bottom: 1px solid #dfe6e9; font-size: 1.1rem; }
         th { background: #f8f9fa; font-weight: 600; position: sticky; top: 0; }
         td:first-child { font-weight: 600; }
         td:last-child { color: var(--secondary); font-weight: 800; }
 
-        .admin-link {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            color: #b2bec3;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
+        .admin-link { position: absolute; top: 20px; right: 25px; color: #b2bec3; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
         .admin-link:hover { color: var(--primary); }
-
         .flex-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
     </style>
 </head>
@@ -192,17 +98,24 @@
         <h1>Entraînement Vocabulaire</h1>
         <p class="subtitle">Prêt à apprendre ? Configurez votre session.</p>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; margin-bottom: 30px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; text-align: left; margin-bottom: 30px;">
             <div class="form-group" style="margin: 0;">
-                <label>1. Choisissez la classe</label>
+                <label>1. Classe</label>
                 <select id="klas-select" onchange="laadTrajecten()">
                     <option value="">-- Sélectionner --</option>
                 </select>
             </div>
             
             <div class="form-group" style="margin: 0;">
-                <label>2. Choisissez le trajet</label>
-                <select id="traject-select">
+                <label>2. Trajet</label>
+                <select id="traject-select" onchange="laadSeries()">
+                    <option value="">-- Sélectionner --</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+                <label>3. Série</label>
+                <select id="serie-select">
                     <option value="">-- Sélectionner --</option>
                 </select>
             </div>
@@ -230,14 +143,17 @@
 
     <!-- Écran 3: Résultats -->
     <div id="result-screen" class="screen">
-        <h1 style="color: var(--success); font-size: 2.5rem;">Bravo ! 🎉</h1>
-        <p class="subtitle">Voici un récapitulatif de votre série.</p>
+        <h1 style="color: var(--success); font-size: 2.5rem;">Fini !</h1>
+        <p class="subtitle">L'exercice est terminé.</p>
         
-        <div class="results-table-container">
-            <table id="res-body"></table>
+        <button id="show-solution-btn" class="btn" style="margin-bottom: 20px;" onclick="toonOplossingen()">👀 Afficher la solution</button>
+
+        <div id="solution-container" style="display: none;">
+            <div class="results-table-container">
+                <table id="res-body"></table>
+            </div>
+            <button class="btn btn-outline" onclick="location.reload()">🏠 Retour au menu</button>
         </div>
-        
-        <button class="btn" onclick="location.reload()">🏠 Retour au menu</button>
     </div>
 </div>
 
@@ -255,12 +171,28 @@
     function laadTrajecten() {
         let gekozenKlas = document.getElementById('klas-select').value;
         let trajectSelect = document.getElementById('traject-select');
+        document.getElementById('serie-select').innerHTML = '<option value="">-- Sélectionner --</option>';
         trajectSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
         
         let relevanteLijsten = database.filter(item => item.klas === gekozenKlas);
         relevanteLijsten.forEach(item => {
             trajectSelect.innerHTML += `<option value="${item.id}">${item.traject}</option>`;
         });
+    }
+
+    function laadSeries() {
+        let id = document.getElementById('traject-select').value;
+        let serieSelect = document.getElementById('serie-select');
+        serieSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
+        
+        if (!id) return;
+        let item = database.find(i => i.id == id);
+        
+        if(item && item.series) {
+            item.series.forEach((serie, index) => {
+                serieSelect.innerHTML += `<option value="${index}">Série ${index + 1} (${serie.length} mots)</option>`;
+            });
+        }
     }
 
     function shuffle(array) {
@@ -278,13 +210,15 @@
 
     function startOefening() {
         let id = document.getElementById('traject-select').value;
+        let serieIdx = document.getElementById('serie-select').value;
         maxTime = parseInt(document.getElementById('time-input').value);
 
-        if (!id) return alert("Veuillez choisir un trajet !");
+        if (!id || serieIdx === "") return alert("Veuillez choisir un trajet et une série !");
         if (!maxTime || maxTime < 1) return alert("Veuillez définir un temps valide.");
         
         let gekozenItem = database.find(item => item.id == id);
-        actieveLijst = shuffle([...gekozenItem.woorden]);
+        // We nemen de vaste série, maar shuffelen de woorden binnen de série voor het oefenen
+        actieveLijst = shuffle([...gekozenItem.series[serieIdx]]);
         
         switchScreen('exercise-screen');
         nextWord();
@@ -318,13 +252,9 @@
         let percentage = (timeLeft / maxTime) * 100;
         bar.style.width = percentage + "%";
         
-        if (percentage <= 25) {
-            bar.style.background = "var(--danger)";
-        } else if (percentage <= 50) {
-            bar.style.background = "#f1c40f"; // Jaune/Orange pour avertir
-        } else {
-            bar.style.background = "var(--success)";
-        }
+        if (percentage <= 25) bar.style.background = "var(--danger)";
+        else if (percentage <= 50) bar.style.background = "#f1c40f";
+        else bar.style.background = "var(--success)";
     }
 
     function togglePause() {
@@ -344,6 +274,11 @@
                 <td>${w.fr}</td>
             </tr>
         `).join('');
+    }
+
+    function toonOplossingen() {
+        document.getElementById('show-solution-btn').style.display = 'none';
+        document.getElementById('solution-container').style.display = 'block';
     }
 </script>
 
